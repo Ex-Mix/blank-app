@@ -94,7 +94,7 @@ selected_game = st.selectbox(
 top_n = st.slider(
     "How many recommendations would you like?", 
     min_value=1, 
-    max_value=10, 
+    max_value=9, 
     value=5, 
     help="Adjust the number of recommendations displayed."
 )
