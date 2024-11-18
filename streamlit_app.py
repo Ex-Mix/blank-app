@@ -102,6 +102,12 @@ top_n = st.slider(
 # Path to image folder
 image_folder = './'
 
+def truncate_text(text, max_length=20):
+    """
+    Truncate text to a specific length and add ellipsis if it exceeds the limit.
+    """
+    return text if len(text) <= max_length else text[:max_length] + "..."
+
 # Recommendation button
 if st.button("🔍 Recommend Games"):
     with st.spinner("Fetching recommendations..."):
@@ -134,6 +140,9 @@ if st.button("🔍 Recommend Games"):
                     # Dynamic color for game name
                     game_name_color = get_game_name_color(game_row['votes_up_count'])
 
+                    # Truncate game name for display
+                    truncated_name = truncate_text(game_row['game'])
+
                     # Game name and details
                     background = "linear-gradient(135deg, #74ebd5, #acb6e5);"  # Gradient
                     col.markdown(
@@ -148,16 +157,18 @@ if st.button("🔍 Recommend Games"):
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
                             transition: transform 0.2s, box-shadow 0.2s; 
                             color: black;"
+                            title="{game_row['game']}"  /* Tooltip for full game name */
                             onmouseover="this.style.transform='scale(1.05)';"
                             onmouseout="this.style.transform='scale(1)';"
                         >
-                            <b style="font-size: 18px; color: {game_name_color};">{game_row['game']}</b><br>
+                            <b style="font-size: 18px; color: {game_name_color};">{truncated_name}</b><br>
                             <span style="font-weight: bold;">👍 Votes Up:</span> {formatted_votes}<br>
                             <span style="font-weight: bold;">⏱️ Playtime:</span> {formatted_playtime} hours
                         </div>
                         """,
                         unsafe_allow_html=True
                     )
+
 
 # Footer
 st.markdown("---")
