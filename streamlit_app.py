@@ -19,6 +19,25 @@ def load_data(filepath):
 
 data = load_data('recommend.csv')
 
+# Utility function to format numbers
+def format_number(num):
+    """
+    Format numbers with commas and two decimal places.
+    """
+    return f"{num:,.2f}"
+
+# Function to determine dynamic color for game names
+def get_game_name_color(votes_up_count):
+    """
+    Return a color based on the number of votes.
+    """
+    if votes_up_count > 1_000_000:
+        return "#4CAF50"  # Green for highly popular games
+    elif votes_up_count > 500_000:
+        return "#2196F3"  # Blue for medium popularity
+    else:
+        return "#FF5722"  # Red for less popular games
+
 # Define recommendation function
 def recommend_games(selected_game, data, top_n=5):
     """
@@ -108,29 +127,37 @@ if st.button("🔍 Recommend Games"):
                     else:
                         col.image("https://via.placeholder.com/300x300?text=No+Image", use_container_width=True)
 
+                    # Format votes and playtime
+                    formatted_votes = format_number(game_row['votes_up_count'])
+                    formatted_playtime = format_number(game_row['total_playtime'])
+
+                    # Dynamic color for game name
+                    game_name_color = get_game_name_color(game_row['votes_up_count'])
+
                     # Game name and details
-                    background = "linear-gradient(135deg, #74ebd5, #acb6e5);"  # Example gradient
+                    background = "linear-gradient(135deg, #74ebd5, #acb6e5);"  # Gradient
                     col.markdown(
                         f"""
                         <div style="
                             text-align: center; 
-                            padding: 10px; 
+                            padding: 15px; 
                             margin-top: 10px; 
                             margin-bottom: 20px; 
                             border-radius: 12px; 
                             background: {background}; 
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-                            color: black;
-                        ">
-                            <b style="font-size: 16px;">{game_row['game']}</b><br>
-                            <span style="font-weight: bold;">👍 Votes Up:</span> {game_row['votes_up_count']}<br>
-                            <span style="font-weight: bold;">⏱️ Playtime:</span> {game_row['total_playtime']} hours
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+                            transition: transform 0.2s, box-shadow 0.2s; 
+                            color: black;"
+                            onmouseover="this.style.transform='scale(1.05)';"
+                            onmouseout="this.style.transform='scale(1)';"
+                        >
+                            <b style="font-size: 18px; color: {game_name_color};">{game_row['game']}</b><br>
+                            <span style="font-weight: bold;">👍 Votes Up:</span> {formatted_votes}<br>
+                            <span style="font-weight: bold;">⏱️ Playtime:</span> {formatted_playtime} hours
                         </div>
                         """,
                         unsafe_allow_html=True
                     )
-
-
 
 # Footer
 st.markdown("---")
@@ -138,17 +165,16 @@ st.markdown(
     """
     <div style="text-align: center; margin-top: 50px;">
         <p>🎲 Made with ❤️ using Streamlit</p>
-        <p>Follow me on:
-            <a href="https://twitter.com" target="_blank">
-                <img src="https://img.icons8.com/color/48/000000/twitter--v1.png" width="24"/>
-            </a>
-            <a href="https://github.com" target="_blank">
-                <img src="https://img.icons8.com/ios-glyphs/30/000000/github.png" width="24"/>
-            </a>
-            <a href="https://linkedin.com" target="_blank">
-                <img src="https://img.icons8.com/ios-glyphs/30/000000/linkedin.png" width="24"/>
-            </a>
-        </p>
+        <p>Connect with me:</p>
+        <a href="https://twitter.com" target="_blank">
+            <img src="https://img.icons8.com/color/48/000000/twitter--v1.png" width="36"/>
+        </a>
+        <a href="https://github.com" target="_blank">
+            <img src="https://img.icons8.com/ios-glyphs/30/000000/github.png" width="36"/>
+        </a>
+        <a href="https://linkedin.com" target="_blank">
+            <img src="https://img.icons8.com/ios-glyphs/30/000000/linkedin.png" width="36"/>
+        </a>
     </div>
     """,
     unsafe_allow_html=True
